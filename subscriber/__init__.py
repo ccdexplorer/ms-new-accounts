@@ -14,14 +14,13 @@ from rich.console import Console
 from env import *
 
 from .address import Address as _address
-from .instances_and_modules import InstancesAndModules as _instances_and_modules
 from .utils import Utils as _utils
 
 urllib3.disable_warnings()
 console = Console()
 
 
-class Subscriber(_instances_and_modules, _address, _utils):
+class Subscriber(_address, _utils):
     def __init__(
         self,
         grpcclient: GRPCClient,

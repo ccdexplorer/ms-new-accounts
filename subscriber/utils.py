@@ -1,7 +1,5 @@
-import datetime as dt
 from enum import Enum
 
-from ccdexplorer_fundamentals.enums import NET
 from ccdexplorer_fundamentals.tooter import Tooter, TooterChannel, TooterType
 from rich.console import Console
 
