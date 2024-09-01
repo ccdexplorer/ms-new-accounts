@@ -38,7 +38,7 @@ class Address:
             [DeleteOne({"_id": msg["_id"]})]
         )
 
-    async def process_new_address(self, net: str, msg: dict):
+    async def process_new_address(self, net: NET, msg: dict):
         self.motor_mainnet: dict[Collections, Collection]
         self.motor_testnet: dict[Collections, Collection]
         self.grpcclient: GRPCClient
@@ -48,10 +48,10 @@ class Address:
         new_address = msg["address"]
         try:
             account_info = self.grpcclient.get_account_info(
-                "last_final", hex_address=new_address, net=NET(net)
+                "last_final", hex_address=new_address, net=net
             )
         except Exception as e:
-            tooter_message = f"{net}: New address failed with error  {e}."
+            tooter_message = f"{net.value}: New address failed with error  {e}."
             self.send_to_tooter(tooter_message)
             return
 
@@ -64,7 +64,5 @@ class Address:
         _ = await db_to_use[Collections.all_account_addresses].bulk_write(
             [ReplaceOne({"_id": canonical_address}, new_record, upsert=True)]
         )
-        tooter_message = (
-            f"{net}: New address processed {new_address} at index {account_info.index}."
-        )
+        tooter_message = f"{net.value}: New address processed {new_address} at index {account_info.index}."
         self.send_to_tooter(tooter_message)
