@@ -26,7 +26,7 @@ class Address:
     async def cleanup(self):
 
         for net in NET:
-            console.log(f"Running cleanup for {net}")
+            console.log(f"Running cleanup for {net}.")
             db: dict[Collections, Collection] = (
                 self.motor_mainnet if net.value == "mainnet" else self.motor_testnet
             )
