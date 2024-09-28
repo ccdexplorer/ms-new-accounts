@@ -12,6 +12,17 @@ console = Console()
 
 
 class Address:
+    async def address_already_exists(self, net: NET, msg: dict):
+        db: dict[Collections, Collection] = (
+            self.motor_mainnet if net.value == "mainnet" else self.motor_testnet
+        )
+        new_address = msg["address"]
+        canonical_address = new_address[:29]
+        address_exists = await db[Collections.all_account_addresses].find_one(
+            {"_id": canonical_address}
+        )
+        return address_exists is not None
+
     async def cleanup(self):
 
         for net in NET:
@@ -26,7 +37,8 @@ class Address:
                 .to_list(length=None)
             )
             for msg in todo_addresses:
-                await self.process_new_address(net, msg)
+                if not (await self.process_new_address(net, msg)):
+                    await self.process_new_address(net, msg)
                 await self.remove_todo_from_queue(net, msg)
 
     async def remove_todo_from_queue(self, net: str, msg: dict):
