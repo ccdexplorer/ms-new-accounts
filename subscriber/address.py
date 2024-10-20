@@ -56,7 +56,7 @@ class Address:
         self.grpcclient: GRPCClient
         self.tooter: Tooter
 
-        db_to_use = self.motor_testnet if net == "testnet" else self.motor_mainnet
+        db_to_use = self.motor_testnet if net.value == "testnet" else self.motor_mainnet
         new_address = msg["address"]
         try:
             account_info = self.grpcclient.get_account_info(
