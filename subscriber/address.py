@@ -37,7 +37,7 @@ class Address:
                 .to_list(length=None)
             )
             for msg in todo_addresses:
-                if not (await self.process_new_address(net, msg)):
+                if not (await self.address_already_exists(net, msg)):
                     await self.process_new_address(net, msg)
                 await self.remove_todo_from_queue(net, msg)
 
