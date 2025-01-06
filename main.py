@@ -10,7 +10,14 @@ from ccdexplorer_fundamentals.GRPCClient import GRPCClient
 from ccdexplorer_fundamentals.mongodb import MongoMotor
 from ccdexplorer_fundamentals.tooter import Tooter
 from ccdexplorer_fundamentals.enums import NET
-from env import MQTT_PASSWORD, MQTT_QOS, MQTT_SERVER, MQTT_USER, RUN_LOCAL
+from env import (
+    MQTT_PASSWORD,
+    MQTT_QOS,
+    MQTT_SERVER,
+    MQTT_USER,
+    RUN_LOCAL,
+    ADMIN_CHAT_ID,
+)
 from subscriber import Subscriber
 
 grpcclient = GRPCClient()
@@ -62,7 +69,10 @@ async def main():
                         await subscriber.cleanup()
                     if message.topic.matches("ccdexplorer/+/heartbeat/address/new"):
                         await subscriber.process_new_address(net, msg)
-
+                    if message.topic.matches("ccdexplorer/services/info"):
+                        await grpcclient.aconnection_info(
+                            "MS Accounts", tooter, ADMIN_CHAT_ID
+                        )
         except aiomqtt.MqttError:
             print(f"Connection lost; Reconnecting in {interval} seconds ...")
             await asyncio.sleep(interval)
